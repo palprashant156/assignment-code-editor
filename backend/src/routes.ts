@@ -38,7 +38,14 @@ router.post('/auth/login', authLimit, asyncRoute(async (req, res) => {
 router.post('/auth/logout', (_req, res) => { res.clearCookie('codearena', cookieOptions()); res.json({ success: true }); });
 router.get('/auth/me', requireAuth, (req: AuthedRequest, res) => res.json({ user: req.user }));
 
-function cookieOptions() { return { httpOnly: true, secure: config.cookieSecure, sameSite: 'lax' as const, path: '/' }; }
+function cookieOptions() {
+  return {
+    httpOnly: true,
+    secure: config.cookieSecure,
+    sameSite: config.cookieSecure ? 'none' as const : 'lax' as const,
+    path: '/',
+  };
+}
 function setAuthCookie(res: any, userId: string) {
   const token = jwt.sign({ sub: userId }, config.jwtSecret, { expiresIn: '12h' });
   res.cookie('codearena', token, { ...cookieOptions(), maxAge: 12 * 60 * 60 * 1000 });
