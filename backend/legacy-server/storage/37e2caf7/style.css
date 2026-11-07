@@ -1,0 +1,117 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #060913;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.game-header {
+  text-align: center;
+}
+
+.game-header h1 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.4rem;
+  color: #00f3ff;
+  text-shadow: 0 0 12px rgba(0, 243, 255, 0.7);
+  letter-spacing: 2px;
+  margin-bottom: 0.6rem;
+}
+
+.stats-bar {
+  display: flex;
+  gap: 2rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 243, 255, 0.3);
+}
+
+.stat .label {
+  color: #a855f7;
+}
+
+.canvas-container {
+  position: relative;
+  border: 2px solid #00f3ff;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.25);
+  overflow: hidden;
+  background: #02040a;
+}
+
+#gameCanvas {
+  display: block;
+}
+
+.game-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(2, 4, 10, 0.88);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.game-overlay h2 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.3rem;
+  color: #f43f5e;
+  text-shadow: 0 0 10px rgba(244, 63, 94, 0.8);
+}
+
+.game-overlay p {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  max-width: 400px;
+}
+
+.arcade-btn {
+  font-family: 'Press Start 2P', monospace;
+  background: #00f3ff;
+  color: #02040a;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.arcade-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(0, 243, 255, 0.9);
+}
+
+.controls-hint {
+  font-size: 0.85rem;
+  color: #64748b;
+}

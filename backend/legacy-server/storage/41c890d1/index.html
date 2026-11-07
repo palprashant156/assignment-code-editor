@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Glassmorphic Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="calculator-app">
+    <div class="calculator-card">
+      <div class="calc-header">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="app-title">CodeCraft Calc</span>
+      </div>
+
+      <div class="display-container">
+        <div id="prev-operation" class="prev-op"></div>
+        <div id="current-display" class="current-display">0</div>
+      </div>
+
+      <div class="keypad">
+        <button class="key func" data-action="clear">AC</button>
+        <button class="key func" data-action="delete">DEL</button>
+        <button class="key func" data-action="percent">%</button>
+        <button class="key op" data-op="/">÷</button>
+
+        <button class="key num" data-num="7">7</button>
+        <button class="key num" data-num="8">8</button>
+        <button class="key num" data-num="9">9</button>
+        <button class="key op" data-op="*">×</button>
+
+        <button class="key num" data-num="4">4</button>
+        <button class="key num" data-num="5">5</button>
+        <button class="key num" data-num="6">6</button>
+        <button class="key op" data-op="-">−</button>
+
+        <button class="key num" data-num="1">1</button>
+        <button class="key num" data-num="2">2</button>
+        <button class="key num" data-num="3">3</button>
+        <button class="key op" data-op="+">+</button>
+
+        <button class="key num zero" data-num="0">0</button>
+        <button class="key num" data-num=".">.</button>
+        <button class="key equals" data-action="calculate">=</button>
+      </div>
+    </div>
+
+    <!-- History Panel -->
+    <div class="history-panel">
+      <h3>Calculation History</h3>
+      <ul id="history-list">
+        <li class="empty-hint">Calculations will appear here</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

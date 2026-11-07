@@ -1,0 +1,7 @@
+node_modules
+dist
+client-dist
+frontend/dist
+.env
+uploads
+*.log

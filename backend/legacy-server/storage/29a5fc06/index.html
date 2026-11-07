@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Rivera | Creative Frontend Developer</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="navbar">
+    <div class="logo">
+      <span class="logo-bracket">&lt;</span>Alex<span class="logo-accent">.dev</span><span class="logo-bracket">/&gt;</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#about" class="nav-item">About</a>
+      <a href="#skills" class="nav-item">Skills</a>
+      <a href="#projects" class="nav-item">Projects</a>
+      <a href="#contact" class="nav-item btn-primary">Let's Talk</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="about">
+    <div class="hero-badge">
+      <span class="pulse-dot"></span> Available for new opportunities
+    </div>
+    <h1 class="hero-title">
+      Crafting <span class="gradient-text">digital experiences</span> that inspire and engage.
+    </h1>
+    <p class="hero-desc">
+      Hi! I'm Alex, a frontend developer and UI designer passionate about building interactive, accessible, and high-performance web applications.
+    </p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-glow">View My Work <i class="fas fa-arrow-right"></i></a>
+      <button id="theme-btn" class="btn btn-outline"><i class="fas fa-magic"></i> Surprise Effect</button>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section class="section" id="skills">
+    <div class="section-header">
+      <h2 class="section-title">My Tech Stack</h2>
+      <p class="section-subtitle">Technologies and tools I use to bring ideas to life</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <i class="fab fa-html5 skill-icon html"></i>
+        <h3>Semantic HTML5</h3>
+        <p>Accessible and SEO-optimized structures</p>
+      </div>
+      <div class="skill-card">
+        <i class="fab fa-css3-alt skill-icon css"></i>
+        <h3>Modern CSS & Flexbox</h3>
+        <p>Responsive grid layouts, animations & variables</p>
+      </div>
+      <div class="skill-card">
+        <i class="fab fa-js skill-icon js"></i>
+        <h3>JavaScript (ES6+)</h3>
+        <p>DOM manipulation, async APIs, interactive logic</p>
+      </div>
+      <div class="skill-card">
+        <i class="fas fa-mobile-alt skill-icon mobile"></i>
+        <h3>Responsive Design</h3>
+        <p>Flawless on smartphones, tablets & desktop displays</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section class="section" id="projects">
+    <div class="section-header">
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="section-subtitle">Hands-on websites and creative interactive tools</p>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-thumb gradient-1">
+          <i class="fas fa-bolt project-icon"></i>
+        </div>
+        <div class="project-content">
+          <div class="project-tags">
+            <span class="tag">HTML5</span>
+            <span class="tag">CSS Grid</span>
+            <span class="tag">Canvas</span>
+          </div>
+          <h3>Retro Arcade Runner</h3>
+          <p>A fast-paced mini browser game with particle effects and custom sound synthesizers.</p>
+          <button class="card-btn" onclick="openDemo('Arcade')">Live Demo <i class="fas fa-external-link-alt"></i></button>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-thumb gradient-2">
+          <i class="fas fa-cloud-sun project-icon"></i>
+        </div>
+        <div class="project-content">
+          <div class="project-tags">
+            <span class="tag">JavaScript</span>
+            <span class="tag">Fetch API</span>
+            <span class="tag">CSS Glass</span>
+          </div>
+          <h3>Atmosphere Weather Radar</h3>
+          <p>Real-time meteorological forecast application with animated weather condition icons.</p>
+          <button class="card-btn" onclick="openDemo('Weather')">Live Demo <i class="fas fa-external-link-alt"></i></button>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-thumb gradient-3">
+          <i class="fas fa-palette project-icon"></i>
+        </div>
+        <div class="project-content">
+          <div class="project-tags">
+            <span class="tag">CSS Variables</span>
+            <span class="tag">JS Color Engine</span>
+          </div>
+          <h3>Chroma Palette Generator</h3>
+          <p>Generates harmonic color schemes with one-click hex copying and accessibility contrast ratings.</p>
+          <button class="card-btn" onclick="openDemo('Chroma')">Live Demo <i class="fas fa-external-link-alt"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Contact Section -->
+  <section class="section contact-section" id="contact">
+    <div class="contact-card">
+      <h2>Have a project in mind?</h2>
+      <p>Send me a message or connect through social channels.</p>
+      <form id="contact-form" class="contact-form">
+        <div class="form-group">
+          <input type="text" id="name" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+          <input type="email" id="email" placeholder="Your Email Address" required>
+        </div>
+        <div class="form-group">
+          <textarea id="message" rows="4" placeholder="Tell me about your project..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-glow">Send Message <i class="fas fa-paper-plane"></i></button>
+      </form>
+      <div id="status-msg" class="status-msg hidden"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2026 Alex Rivera. Built inside CodeCraft Studio IDE.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

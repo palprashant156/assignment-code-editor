@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeCraft Studio | Interactive Web IDE for Students</title>
+  <meta name="description" content="A powerful side-by-side online coding IDE and live web playground similar to Replit for students and web designers.">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/editor.css">
+  <link rel="stylesheet" href="css/preview.css">
+  <link rel="stylesheet" href="css/components.css">
+  
+  <!-- Icons & Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body data-theme="dark">
+  <div id="app-root">
+    
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-badge" id="btn-brand-home" title="CodeCraft Studio Home">
+          <div class="brand-icon"><i class="fas fa-code"></i></div>
+          <span class="brand-name">CodeCraft</span>
+          <span class="student-tag">STUDIO</span>
+        </div>
+
+        <div class="project-selector" id="project-selector-dropdown" title="Switch or Rename Project">
+          <i class="fas fa-folder-open" style="color: var(--accent-cyan);"></i>
+          <input type="text" id="project-title-input" class="project-name-edit" value="Loading..." title="Click to rename project">
+          <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--text-muted);"></i>
+        </div>
+      </div>
+
+      <div class="nav-center">
+        <!-- Main Run Button -->
+        <button id="btn-run" class="btn-run" title="Run Code in Live Preview (Ctrl + Enter)">
+          <i class="fas fa-play"></i> Run
+          <span class="kbd-shortcut">Ctrl ↵</span>
+        </button>
+
+        <!-- Save Indicator -->
+        <div class="save-status" id="save-status-indicator">
+          <span class="status-dot" id="save-dot"></span>
+          <span id="save-text">Saved</span>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <!-- New Repl Button -->
+        <button id="btn-new-repl" class="nav-btn" title="Create New Project">
+          <i class="fas fa-plus"></i> New Repl
+        </button>
+
+        <!-- Templates Button -->
+        <button id="btn-templates" class="nav-btn" title="Browse Starter Templates">
+          <i class="fas fa-layer-group"></i> Templates
+        </button>
+
+        <!-- Export ZIP Button -->
+        <button id="btn-export-zip" class="nav-btn" title="Download Complete Project as .ZIP">
+          <i class="fas fa-download"></i> Export
+        </button>
+
+        <!-- Popout Live Preview in New Window -->
+        <button id="btn-popout-preview" class="nav-btn nav-btn-icon" title="Open Preview in Standalone Browser Tab">
+          <i class="fas fa-external-link-alt"></i>
+        </button>
+
+        <!-- Theme Selector -->
+        <div class="theme-picker-wrapper">
+          <select id="theme-select" class="nav-btn" title="Switch IDE Theme">
+            <option value="dark">🌙 Dark Replit</option>
+            <option value="cyberpunk">⚡ Cyberpunk Neon</option>
+            <option value="nightowl">🦉 Night Owl</option>
+            <option value="light">☀️ Modern Light</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- Workspace Main Container -->
+    <div class="workspace-container">
+      
+      <!-- Left Activity Bar -->
+      <aside class="activity-bar">
+        <button class="activity-btn active" id="act-files" data-tab="files" title="Files (Explorer)">
+          <i class="fas fa-folder"></i>
+        </button>
+        <button class="activity-btn" id="act-lessons" data-tab="lessons" title="Assignments & Learning Tasks" aria-label="Assignments">
+          <i class="fas fa-graduation-cap"></i>
+        </button>
+        <button class="activity-btn" id="act-ai" data-tab="ai" title="AI Code Tutor & Assistant">
+          <i class="fas fa-robot"></i>
+        </button>
+        <button class="activity-btn" id="act-cdn" data-tab="cdn" title="Packages & CDN Libraries">
+          <i class="fas fa-box-open"></i>
+        </button>
+        
+        <div class="activity-spacer"></div>
+
+        <button class="activity-btn" id="act-settings" data-tab="settings" title="Editor Settings">
+          <i class="fas fa-cog"></i>
+        </button>
+      </aside>
+
+      <!-- Collapsible Sidebar Drawer -->
+      <section class="sidebar-drawer" id="sidebar-drawer">
+        
+        <!-- Files Tab View -->
+        <div class="sidebar-pane" id="pane-files">
+          <div class="sidebar-header">
+            <span class="sidebar-title">Files</span>
+            <div class="sidebar-actions">
+              <button class="icon-action-btn" id="btn-new-file" title="New File"><i class="fas fa-file-circle-plus"></i></button>
+              <button class="icon-action-btn" id="btn-new-folder" title="New Folder"><i class="fas fa-folder-plus"></i></button>
+              <button class="icon-action-btn" id="btn-upload-file" title="Upload Asset"><i class="fas fa-upload"></i></button>
+              <button class="icon-action-btn" id="btn-refresh-files" title="Refresh Tree"><i class="fas fa-sync-alt"></i></button>
+            </div>
+          </div>
+          <div class="sidebar-content">
+            <ul class="file-tree" id="file-tree-root">
+              <!-- Rendered dynamically -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Lessons & Curriculum Tab View -->
+        <div class="sidebar-pane hidden" id="pane-lessons">
+          <div class="sidebar-header">
+            <span class="sidebar-title">Assignment brief</span>
+          </div>
+          <div class="sidebar-content">
+            <div class="lessons-container">
+              <section class="assignment-brief" aria-label="Current assignment">
+                <div class="assignment-eyebrow"><i class="fas fa-sparkles"></i> YOUR CHALLENGE</div>
+                <h2 class="assignment-title">Create a personal landing page</h2>
+                <p class="assignment-copy">Recreate the reference design. Your page updates in the preview as you edit HTML, CSS, and JavaScript.</p>
+                <div class="assignment-reference" role="img" aria-label="Design reference showing a dark portfolio page with navigation, a large headline, and a call-to-action">
+                  <div class="reference-top"><span></span><span></span><span></span><b>alex.dev</b></div>
+                  <div class="reference-nav"><i></i><i></i><i></i><em></em></div>
+                  <div class="reference-content">
+                    <small>AVAILABLE FOR WORK</small>
+                    <strong>Designing<br>what's next.</strong>
+                    <span>Digital experiences made with care.</span>
+                    <div class="reference-button">Explore my work&nbsp; ↗</div>
+                  </div>
+                  <div class="reference-orb"></div>
+                </div>
+                <div class="assignment-files"><span><b class="html-dot">●</b> index.html</span><span><b class="css-dot">●</b> style.css</span><span><b class="js-dot">●</b> script.js</span></div>
+                <div class="assignment-meta"><span><i class="far fa-clock"></i> 20–30 min</span><span><i class="fas fa-signal"></i> Beginner</span></div>
+              </section>
+              <label class="form-label" for="lesson-select">Current Level:</label>
+              <select id="lesson-select" class="lesson-selector-dropdown">
+                <!-- Lessons populated dynamically -->
+              </select>
+              <p class="lesson-desc" id="lesson-description"></p>
+              
+              <div class="task-list" id="lesson-task-list">
+                <!-- Tasks populated dynamically -->
+              </div>
+
+              <button id="btn-verify-lesson" class="btn-verify-lesson">
+                <i class="fas fa-check-circle"></i> Verify My Code
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Code Tutor Tab View -->
+        <div class="sidebar-pane hidden" id="pane-ai">
+          <div class="sidebar-header">
+            <span class="sidebar-title">AI Coding Tutor</span>
+          </div>
+          <div class="sidebar-content ai-tutor-container">
+            <div class="ai-chat-history" id="ai-chat-box">
+              <div class="ai-message assistant">
+                👋 <strong>Hello, student!</strong> I'm your AI coding buddy. Need help with HTML, CSS flexbox, or JavaScript? Click a quick question below or ask me anything!
+              </div>
+            </div>
+
+            <div class="ai-quick-pills">
+              <button class="pill-btn" data-action="explain">Explain File</button>
+              <button class="pill-btn" data-action="debug">Find Bugs</button>
+              <button class="pill-btn" data-action="improve">Make it Cooler</button>
+              <button class="pill-btn" data-action="center">Center Element</button>
+            </div>
+
+            <form id="ai-prompt-form" class="ai-input-bar">
+              <input type="text" id="ai-prompt-input" class="ai-text-input" placeholder="Ask AI tutor anything..." autocomplete="off">
+              <button type="submit" class="ai-send-btn" title="Send Question"><i class="fas fa-arrow-up"></i></button>
+            </form>
+          </div>
+        </div>
+
+        <!-- CDN & Libraries Tab View -->
+        <div class="sidebar-pane hidden" id="pane-cdn">
+          <div class="sidebar-header">
+            <span class="sidebar-title">Packages & CDN Libraries</span>
+          </div>
+          <div class="sidebar-content">
+            <div class="cdn-list" id="cdn-list-root">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Tab View -->
+        <div class="sidebar-pane hidden" id="pane-settings">
+          <div class="sidebar-header">
+            <span class="sidebar-title">IDE Settings</span>
+          </div>
+          <div class="sidebar-content" style="padding: 1rem; display: flex; flex-direction: column; gap: 1.2rem;">
+            <div class="form-group">
+              <label class="form-label" for="setting-font-size">Font Size: <span id="font-size-val">14px</span></label>
+              <input type="range" id="setting-font-size" min="11" max="22" value="14" step="1">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="setting-tab-size">Tab Size:</label>
+              <select id="setting-tab-size" class="form-input">
+                <option value="2">2 Spaces</option>
+                <option value="4">4 Spaces</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="setting-word-wrap">Word Wrap:</label>
+              <select id="setting-word-wrap" class="form-input">
+                <option value="on">On (Wrap lines)</option>
+                <option value="off">Off (Horizontal scroll)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="setting-autorun">Auto-run Live Preview:</label>
+              <select id="setting-autorun" class="form-input">
+                <option value="on">On (Instant on save)</option>
+                <option value="manual">Manual (Click Run only)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Center & Right Split Panes -->
+      <main class="split-workspace" id="split-workspace">
+        
+        <!-- Center: Code Editor Pane -->
+        <div class="pane-editor" id="pane-editor">
+          
+          <!-- Open File Tabs Bar -->
+          <div class="editor-tabs-bar" id="editor-tabs-bar">
+            <!-- Tabs rendered dynamically -->
+          </div>
+
+          <!-- Toolbar (Breadcrumbs & Actions) -->
+          <div class="editor-toolbar">
+            <div class="breadcrumbs" id="editor-breadcrumbs">
+              <span class="breadcrumb-part"><i class="fas fa-folder"></i> <span id="breadcrumb-project">project</span></span>
+              <span>/</span>
+              <span class="breadcrumb-part" id="breadcrumb-file">index.html</span>
+            </div>
+
+            <div class="editor-tools">
+              <button class="tool-btn" id="btn-format-code" title="Format Code Cleanly (Prettier Style)">
+                <i class="fas fa-wand-magic-sparkles"></i> Format
+              </button>
+              <button class="tool-btn" id="btn-copy-code" title="Copy Current Code to Clipboard">
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+          </div>
+
+          <!-- Monaco Editor Workspace -->
+          <div class="monaco-wrapper">
+            <div id="monaco-editor-container"></div>
+            <textarea id="fallback-code-editor" class="fallback-textarea" spellcheck="false" placeholder="Loading editor..."></textarea>
+          </div>
+
+          <!-- Bottom Drawer (Console & REPL & Logs) -->
+          <div class="bottom-drawer" id="bottom-drawer">
+            <div class="drawer-resizer" id="drawer-resizer"></div>
+            
+            <div class="drawer-header">
+              <div class="drawer-tabs">
+                <button class="drawer-tab active" data-tab="console" id="tab-btn-console">
+                  <i class="fas fa-terminal"></i> Console <span class="badge-counter hidden" id="console-error-badge">0</span>
+                </button>
+                <button class="drawer-tab" data-tab="terminal" id="tab-btn-terminal">
+                  <i class="fas fa-server"></i> Server Stream
+                </button>
+              </div>
+
+              <div class="drawer-actions">
+                <button class="icon-action-btn" id="btn-clear-console" title="Clear Console Logs"><i class="fas fa-ban"></i></button>
+                <button class="icon-action-btn" id="btn-toggle-drawer" title="Collapse/Expand Console"><i class="fas fa-chevron-down"></i></button>
+              </div>
+            </div>
+
+            <div class="drawer-content">
+              <!-- Console Logs Area -->
+              <div class="console-body" id="console-logs-list">
+                <div class="console-entry info">
+                  <span class="console-time">00:00:00</span>
+                  <span class="console-icon"><i class="fas fa-info-circle"></i></span>
+                  <span>CodeCraft Console ready. Student <code>console.log()</code> and errors appear here in real-time.</span>
+                </div>
+              </div>
+
+              <!-- Console REPL Input -->
+              <div class="console-prompt-bar">
+                <span class="prompt-symbol">&gt;</span>
+                <input type="text" id="console-repl-input" class="console-input" placeholder="Evaluate JavaScript directly inside preview (e.g. document.title or 2 + 2)..." autocomplete="off">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Draggable Splitter Handle -->
+        <div class="split-resizer" id="split-resizer" title="Drag to Resize Editor and Preview">
+          <div class="split-handle"></div>
+        </div>
+
+        <!-- Right: Live Preview Pane -->
+        <div class="pane-preview" id="pane-preview">
+          
+          <!-- Virtual Browser Navigation Bar -->
+          <div class="preview-top-bar">
+            <div class="preview-controls-left">
+              <button class="icon-action-btn" id="btn-reload-preview" title="Reload Preview (Refresh)">
+                <i class="fas fa-rotate-right"></i>
+              </button>
+            </div>
+
+            <!-- Virtual URL Address Bar -->
+            <div class="address-bar">
+              <i class="fas fa-lock padlock-icon"></i>
+              <span class="address-text" id="virtual-url-text">https://student-repl.run/index.html</span>
+            </div>
+
+            <div class="preview-controls-right">
+              <!-- Responsive Device Toggle Group -->
+              <div class="device-toggle-group">
+                <button class="device-btn active" id="btn-device-desktop" data-device="desktop" title="Desktop View (100%)">
+                  <i class="fas fa-desktop"></i>
+                </button>
+                <button class="device-btn" id="btn-device-tablet" data-device="tablet" title="Tablet View (768px)">
+                  <i class="fas fa-tablet-alt"></i>
+                </button>
+                <button class="device-btn" id="btn-device-mobile" data-device="mobile" title="Mobile Phone View (375px)">
+                  <i class="fas fa-mobile-alt"></i>
+                </button>
+              </div>
+
+              <!-- Open in standalone window -->
+              <button class="icon-action-btn" id="btn-open-newtab" title="Open Preview in New Tab">
+                <i class="fas fa-arrow-up-right-from-square"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Preview Canvas Stage -->
+          <div class="preview-stage" id="preview-stage">
+            <div class="frame-wrapper mode-desktop" id="device-frame-wrapper">
+              <div class="device-camera"></div>
+              <iframe id="preview-iframe" title="Website Live Preview" sandbox="allow-scripts allow-modals allow-forms allow-same-origin" src="about:blank"></iframe>
+            </div>
+
+            <!-- Loading overlay -->
+            <div class="preview-loader" id="preview-loader">
+              <div class="spinner"></div>
+              <span class="loader-text">Compiling & Updating Preview...</span>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+    <!-- Hidden File Input for Asset Uploads -->
+    <input type="file" id="asset-upload-input" style="display: none;" accept="image/*,audio/*,font/*,.json,.txt,.svg">
+
+    <!-- Modals -->
+
+    <!-- Template / New Repl Modal -->
+    <div class="modal-overlay" id="modal-new-project">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title"><i class="fas fa-rocket" style="color: var(--accent-cyan);"></i> Create New Project</div>
+          <button class="modal-close-btn" data-close-modal="modal-new-project">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="new-project-name">Project Name:</label>
+            <input type="text" id="new-project-name" class="form-input" placeholder="e.g. My Stellar Portfolio">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Choose a Starter Template:</label>
+            <div class="template-grid" id="modal-template-list">
+              <!-- Templates rendered dynamically -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="nav-btn" data-close-modal="modal-new-project">Cancel</button>
+          <button class="btn-run" id="btn-confirm-create-project"><i class="fas fa-plus"></i> Create Project</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Switch Projects Modal -->
+    <div class="modal-overlay" id="modal-switch-project">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title"><i class="fas fa-folder-tree" style="color: var(--accent-purple);"></i> Your Projects</div>
+          <button class="modal-close-btn" data-close-modal="modal-switch-project">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="template-grid" id="modal-project-list">
+            <!-- Projects list rendered dynamically -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="nav-btn" data-close-modal="modal-switch-project">Close</button>
+          <button class="btn-run" id="btn-modal-open-new"><i class="fas fa-plus"></i> New Project</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- New File / Folder Modal -->
+    <div class="modal-overlay" id="modal-new-item">
+      <div class="modal-card" style="max-width: 420px;">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-new-item-title"><i class="fas fa-file-plus"></i> New File</div>
+          <button class="modal-close-btn" data-close-modal="modal-new-item">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" id="modal-item-label" for="modal-item-name">Name:</label>
+            <input type="text" id="modal-item-name" class="form-input" placeholder="e.g. contact.html or components/">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="nav-btn" data-close-modal="modal-new-item">Cancel</button>
+          <button class="btn-run" id="btn-confirm-new-item">Create</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notifications Root -->
+    <div id="toast-container"></div>
+
+  </div>
+
+  <!-- Monaco Editor via CDN (with robust offline fallback) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+
+  <!-- Client JavaScript Modules -->
+  <script src="js/api.js"></script>
+  <script src="js/console.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/fileTree.js"></script>
+  <script src="js/preview.js"></script>
+  <script src="js/aiTutor.js"></script>
+  <script src="js/lessons.js"></script>
+  <script src="js/cdnManager.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

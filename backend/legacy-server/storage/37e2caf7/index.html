@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Space Defender 2D</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="game-wrapper">
+    <header class="game-header">
+      <h1>CYBER DEFENDER</h1>
+      <div class="stats-bar">
+        <div class="stat"><span class="label">SCORE:</span> <span id="score-val">0</span></div>
+        <div class="stat"><span class="label">LIVES:</span> <span id="lives-val">3</span></div>
+        <div class="stat"><span class="label">WAVE:</span> <span id="wave-val">1</span></div>
+      </div>
+    </header>
+
+    <div class="canvas-container">
+      <canvas id="gameCanvas" width="600" height="450"></canvas>
+      <div id="game-overlay" class="game-overlay">
+        <h2 id="overlay-title">SPACE DEFENDER</h2>
+        <p id="overlay-sub">Use [Arrow Keys] or [A / D] to Move • [Spacebar] to Fire</p>
+        <button id="start-btn" class="arcade-btn">LAUNCH MISSION</button>
+      </div>
+    </div>
+
+    <div class="controls-hint">
+      <span>Controls: <strong>←</strong> / <strong>→</strong> or <strong>A</strong> / <strong>D</strong> Move | <strong>SPACE</strong> Fire Laser</span>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

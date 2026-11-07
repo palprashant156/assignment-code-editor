@@ -1,0 +1,34 @@
+[
+  {
+    "id": "813cb39b",
+    "name": "Starter HTML5 / CSS3 / JS Playground",
+    "description": "Clean boilerplate designed for learning basic HTML elements, CSS stylings, and JavaScript event listeners.",
+    "template": "starter",
+    "createdAt": "2026-11-07T07:03:37.139Z",
+    "updatedAt": "2026-11-07T07:23:19.383Z"
+  },
+  {
+    "id": "41c890d1",
+    "name": "Smart Neumorphic Calculator",
+    "description": "A stylish interactive calculator featuring history tape, keyboard shortcuts, memory buttons, and smooth animations.",
+    "template": "calculator",
+    "createdAt": "2026-11-07T07:03:37.138Z",
+    "updatedAt": "2026-11-07T07:03:37.138Z"
+  },
+  {
+    "id": "37e2caf7",
+    "name": "Cyber Arcade - 2D Canvas Game",
+    "description": "An interactive HTML5 Canvas spaceship game with keyboard controls, lasers, asteroids, scoring, and explosion animations.",
+    "template": "game",
+    "createdAt": "2026-11-07T07:03:37.138Z",
+    "updatedAt": "2026-11-07T07:03:37.138Z"
+  },
+  {
+    "id": "29a5fc06",
+    "name": "Personal Developer Portfolio",
+    "description": "A modern, responsive portfolio with dark mode, interactive project cards, skills showcase, and contact form.",
+    "template": "portfolio",
+    "createdAt": "2026-11-07T07:03:37.132Z",
+    "updatedAt": "2026-11-07T07:03:37.132Z"
+  }
+]
