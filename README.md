@@ -59,9 +59,9 @@ The repository includes `vercel.json` and `render.yaml`, so both services can be
    - Output directory `frontend/dist`
    - Node 22 (also pinned by `.nvmrc`)
 
-   Add a project environment variable `VITE_API_URL` set to the Render origin, for example `https://codearena-api.onrender.com` (no `/api` suffix, no trailing slash). `VITE_API_URL` is baked in at build time, so redeploy after changing it. The `/(.*)` rewrite serves `index.html` for client-side routes such as `/dashboard` and `/admin`.
+   Add a project environment variable `API_BASE_URL` set to the Render origin, for example `https://codearena-api.onrender.com` (no `/api` suffix, no trailing slash). `API_BASE_URL` is baked in at build time, so redeploy after changing it. The `/(.*)` rewrite serves `index.html` for client-side routes such as `/dashboard` and `/admin`.
 
-4. **Connect the two services.** Set `CLIENT_ORIGIN` on Render to the exact Vercel origin, then redeploy the API. Both sites use HTTPS, so cross-site auth cookies work with `SameSite=None; Secure`. If you add custom domains, update `CLIENT_ORIGIN` and `VITE_API_URL` to the final custom origins and redeploy both services.
+4. **Connect the two services.** Set `CLIENT_ORIGIN` on Render to the exact Vercel origin, then redeploy the API. Both sites use HTTPS, so cross-site auth cookies work with `SameSite=None; Secure`. If you add custom domains, update `CLIENT_ORIGIN` and `API_BASE_URL` to the final custom origins and redeploy both services.
 
 Notes:
 - Cross-site cookies can be blocked by strict browser privacy settings (notably Safari and Firefox). For the most reliable auth, put both apps under one site, for example `app.example.com` on Vercel and `api.example.com` on Render.
@@ -75,7 +75,7 @@ npm run build
 NODE_ENV=production npm start
 ```
 
-Set `MONGODB_URI`, `JWT_SECRET` (at least 32 random characters), `CLIENT_ORIGIN`, `COOKIE_SECURE=true`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` in `backend/.env`. Set `VITE_API_URL` in `frontend/.env` if the API is hosted on a separate origin. In production, the API serves the built client from `frontend/dist/`. Local uploads are private and excluded from static serving; use an authenticated object-storage adapter (S3/Cloudinary) when deploying multiple API instances.
+Set `MONGODB_URI`, `JWT_SECRET` (at least 32 random characters), `CLIENT_ORIGIN`, `COOKIE_SECURE=true`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` in `backend/.env`. Set `API_BASE_URL` in `frontend/.env` if the API is hosted on a separate origin. In production, the API serves the built client from `frontend/dist/`. Local uploads are private and excluded from static serving; use an authenticated object-storage adapter (S3/Cloudinary) when deploying multiple API instances.
 
 ## Main flows
 

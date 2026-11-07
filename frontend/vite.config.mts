@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => {
   return {
     root: frontendRoot,
     envDir: frontendRoot,
+    envPrefix: ['VITE_', 'API_'],
     plugins: [react(), tailwindcss()],
     server: { port: Number(env.VITE_PORT || 5173), proxy: { '/api': env.API_PROXY_TARGET || 'http://localhost:5000' } },
     build: { outDir: path.join(frontendRoot, 'dist') },
