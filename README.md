@@ -30,34 +30,41 @@ The Vite app is at `http://localhost:5173`; the API is at `http://localhost:5000
 
 Frontend settings live in `frontend/.env`; backend settings live in `backend/.env`. If the default ports are already in use, change `VITE_PORT` and `API_PROXY_TARGET` in `frontend/.env`, then set the matching `PORT` and `CLIENT_ORIGIN` in `backend/.env`.
 
-### Deploying the frontend to Netlify and the API to Render
+### Deploying the frontend to Vercel, the API to Render, and the database to MongoDB Atlas
 
-The repository includes `netlify.toml` and `render.yaml`, so both services can be created from the same GitHub repository.
+The repository includes `vercel.json` and `render.yaml`, so both services can be created from the same GitHub repository.
 
-1. **Push the repository to GitHub.** The configured remote is `origin`.
+1. **Create the MongoDB Atlas database.**
+   - Create a free M0 cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
+   - Under **Database Access**, add a database user with a strong password.
+   - Under **Network Access**, add `0.0.0.0/0` so Render can connect (Render free instances use dynamic outbound IPs), or the static outbound IPs on a paid plan.
+   - Copy the driver connection string, add the database name, and URL-encode special characters in the password:
+     `mongodb+srv://<user>:<password>@<cluster>.mongodb.net/codearena?retryWrites=true&w=majority`
+   - The API creates the collections, indexes, admin account and sample assessment on first start.
 
 2. **Create the API on Render.** In Render, choose **New → Blueprint**, select this repository, and apply `render.yaml`. It creates the `codearena-api` web service with:
    - Build command `npm install --include=dev && npm run build:backend`
    - Start command `npm start`
    - `NODE_ENV=production`, `COOKIE_SECURE=true`, a generated `JWT_SECRET`, and a health check at `/api/health`
 
-   Enter these secret values when prompted:
-   - `MONGODB_URI` — a MongoDB Atlas connection string. Add `0.0.0.0/0` to Atlas network access (Render free instances use dynamic outbound IPs), or the static outbound IPs on a paid plan.
-   - `CLIENT_ORIGIN` — the exact Netlify origin, for example `https://your-site.netlify.app` (no trailing slash, no `/api`).
+   Enter these values when prompted:
+   - `MONGODB_URI` — the Atlas connection string from step 1.
+   - `CLIENT_ORIGIN` — the exact Vercel origin, for example `https://your-project.vercel.app` (no trailing slash, no `/api`). A comma-separated list is accepted for custom domains or specific preview URLs.
    - `ADMIN_EMAIL` and `ADMIN_PASSWORD` — the bootstrap instructor account.
 
    The API is live at `https://<service>.onrender.com`; `GET /api/health` should return `{"status":"ok"}`.
 
-3. **Create the site on Netlify.** In Netlify, choose **Add new site → Import an existing project**, select the repository, and deploy. Netlify reads `netlify.toml`:
+3. **Create the frontend on Vercel.** In Vercel, choose **Add New → Project**, import the repository, and deploy. Vercel reads `vercel.json`:
    - Build command `npm run build:frontend`
-   - Publish directory `frontend/dist`
-   - Node 20 (also pinned by `.nvmrc`)
+   - Output directory `frontend/dist`
+   - Node 22 (also pinned by `.nvmrc`)
 
-   Add a build environment variable `VITE_API_URL` set to the Render origin, for example `https://codearena-api.onrender.com` (no `/api` suffix). `VITE_API_URL` is baked in at build time, so redeploy after changing it. The `/*` redirect serves `index.html` for client-side routes such as `/dashboard` and `/admin`.
+   Add a project environment variable `VITE_API_URL` set to the Render origin, for example `https://codearena-api.onrender.com` (no `/api` suffix, no trailing slash). `VITE_API_URL` is baked in at build time, so redeploy after changing it. The `/(.*)` rewrite serves `index.html` for client-side routes such as `/dashboard` and `/admin`.
 
-4. **Connect the two services.** Set `CLIENT_ORIGIN` on Render to the exact Netlify origin, then redeploy the API. Both sites use HTTPS, so cross-site auth cookies work with `SameSite=None; Secure`. If you add custom domains, update `CLIENT_ORIGIN` and `VITE_API_URL` to the final custom origins and redeploy both services.
+4. **Connect the two services.** Set `CLIENT_ORIGIN` on Render to the exact Vercel origin, then redeploy the API. Both sites use HTTPS, so cross-site auth cookies work with `SameSite=None; Secure`. If you add custom domains, update `CLIENT_ORIGIN` and `VITE_API_URL` to the final custom origins and redeploy both services.
 
 Notes:
+- Cross-site cookies can be blocked by strict browser privacy settings (notably Safari and Firefox). For the most reliable auth, put both apps under one site, for example `app.example.com` on Vercel and `api.example.com` on Render.
 - Render's filesystem is ephemeral. Attach a persistent disk mounted at `/var/data` and set `UPLOAD_DIR=/var/data/uploads` to retain uploaded assessment images across deploys (paid instances), or use persistent object storage.
 - Render free web services spin down after inactivity; the first request may take 30–60 seconds.
 
