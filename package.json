@@ -5,12 +5,17 @@
   "scripts": {
     "start": "node backend/dist/index.js",
     "dev": "concurrently -k \"tsx watch backend/src/index.ts\" \"vite --config frontend/vite.config.mts --host 0.0.0.0\"",
-    "build": "tsc -p backend/tsconfig.json && vite build --config frontend/vite.config.mts",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "tsc -p backend/tsconfig.json",
+    "build:frontend": "vite build --config frontend/vite.config.mts",
     "test": "tsx --test backend/test/*.test.ts"
   },
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/vite": "^4.1.11",

@@ -30,12 +30,36 @@ The Vite app is at `http://localhost:5173`; the API is at `http://localhost:5000
 
 Frontend settings live in `frontend/.env`; backend settings live in `backend/.env`. If the default ports are already in use, change `VITE_PORT` and `API_PROXY_TARGET` in `frontend/.env`, then set the matching `PORT` and `CLIENT_ORIGIN` in `backend/.env`.
 
-### Deploying frontend to Vercel and API to Render
+### Deploying the frontend to Netlify and the API to Render
 
-- In Vercel, set `VITE_API_URL` to the Render service origin, for example `https://your-codearena-api.onrender.com` (no `/api` suffix), then redeploy. Set the project root to the repository root and output directory to `frontend/dist`.
-- In Render, create a Node web service with build command `npm install && npm run build` and start command `npm start`. Set `MONGODB_URI`, a random `JWT_SECRET` of at least 32 characters, `CLIENT_ORIGIN` to the exact Vercel origin, `COOKIE_SECURE=true`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`. Render provides `PORT` automatically.
-- Production auth cookies use `SameSite=None; Secure` for cross-origin requests. For stronger browser privacy compatibility, use custom frontend/API domains under the same site (for example, `app.example.com` and `api.example.com`).
-- Render's local filesystem is ephemeral by default. Attach a persistent disk mounted at `/var/data` and set `UPLOAD_DIR=/var/data/uploads` to retain uploaded assessment images across deploys, or use persistent object storage.
+The repository includes `netlify.toml` and `render.yaml`, so both services can be created from the same GitHub repository.
+
+1. **Push the repository to GitHub.** The configured remote is `origin`.
+
+2. **Create the API on Render.** In Render, choose **New → Blueprint**, select this repository, and apply `render.yaml`. It creates the `codearena-api` web service with:
+   - Build command `npm install --include=dev && npm run build:backend`
+   - Start command `npm start`
+   - `NODE_ENV=production`, `COOKIE_SECURE=true`, a generated `JWT_SECRET`, and a health check at `/api/health`
+
+   Enter these secret values when prompted:
+   - `MONGODB_URI` — a MongoDB Atlas connection string. Add `0.0.0.0/0` to Atlas network access (Render free instances use dynamic outbound IPs), or the static outbound IPs on a paid plan.
+   - `CLIENT_ORIGIN` — the exact Netlify origin, for example `https://your-site.netlify.app` (no trailing slash, no `/api`).
+   - `ADMIN_EMAIL` and `ADMIN_PASSWORD` — the bootstrap instructor account.
+
+   The API is live at `https://<service>.onrender.com`; `GET /api/health` should return `{"status":"ok"}`.
+
+3. **Create the site on Netlify.** In Netlify, choose **Add new site → Import an existing project**, select the repository, and deploy. Netlify reads `netlify.toml`:
+   - Build command `npm run build:frontend`
+   - Publish directory `frontend/dist`
+   - Node 20 (also pinned by `.nvmrc`)
+
+   Add a build environment variable `VITE_API_URL` set to the Render origin, for example `https://codearena-api.onrender.com` (no `/api` suffix). `VITE_API_URL` is baked in at build time, so redeploy after changing it. The `/*` redirect serves `index.html` for client-side routes such as `/dashboard` and `/admin`.
+
+4. **Connect the two services.** Set `CLIENT_ORIGIN` on Render to the exact Netlify origin, then redeploy the API. Both sites use HTTPS, so cross-site auth cookies work with `SameSite=None; Secure`. If you add custom domains, update `CLIENT_ORIGIN` and `VITE_API_URL` to the final custom origins and redeploy both services.
+
+Notes:
+- Render's filesystem is ephemeral. Attach a persistent disk mounted at `/var/data` and set `UPLOAD_DIR=/var/data/uploads` to retain uploaded assessment images across deploys (paid instances), or use persistent object storage.
+- Render free web services spin down after inactivity; the first request may take 30–60 seconds.
 
 ## Production build
 
