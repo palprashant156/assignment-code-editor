@@ -22,8 +22,19 @@ app.use(helmet({
   } },
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
-const allowedOrigins = config.clientOrigin.split(',').map((origin) => origin.trim()).filter(Boolean);
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+const allowedOrigins = config.clientOrigin
+  .split(',')
+  .map((origin) => origin.trim().replace(/^["']|["']$/g, '').replace(/\/+$/, ''))
+  .filter(Boolean);
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    console.warn(`Blocked CORS origin: ${origin}`);
+    return callback(null, false);
+  },
+  credentials: true,
+}));
+console.info(`Allowed CORS origins: ${allowedOrigins.join(', ')}`);
 app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
 app.use((req, _res, next) => { console.info(`${new Date().toISOString()} ${req.method} ${req.path}`); next(); });
